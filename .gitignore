@@ -1,0 +1,36 @@
+# Environment & Secrets
+.env
+.env.*
+!.env.example
+*.pem
+*credentials*.json
+*service-account*.json
+
+# Local Persistent Databases & Vector Store Runtime Data
+data/
+*.db
+*.sqlite
+*.sqlite3
+
+# Terraform State & Local Cache
+deployment/terraform/.terraform/
+deployment/terraform/*.tfstate
+deployment/terraform/*.tfstate.*
+deployment/terraform/*.tfvars
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+dist/
+build/
+*.egg-info/
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+
+# OS & Editor
+.DS_Store
+.idea/
+.vscode/

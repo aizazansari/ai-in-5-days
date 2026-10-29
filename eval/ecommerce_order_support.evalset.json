@@ -1,0 +1,246 @@
+{
+  "eval_set_id": "shopguard_ecommerce_golden_evalset",
+  "name": "ShopGuard E-Commerce Order Support Golden Regression Dataset",
+  "description": "Multi-scenario golden evaluation dataset measuring order lookup, policy retrieval, unshipped address updates, automated refunds, HITL high-value refunds, and Tier-2 escalations.",
+  "eval_cases": [
+    {
+      "eval_id": "case_01_order_status_tracking",
+      "conversation": [
+        {
+          "invocation_id": "inv-order-lookup-1002",
+          "user_content": {
+            "role": "user",
+            "parts": [
+              {
+                "text": "Where is my espresso machine order ORD-1002?"
+              }
+            ]
+          },
+          "final_response": {
+            "role": "model",
+            "parts": [
+              {
+                "text": "Your order ORD-1002 (BaristaPro Precision Espresso Machine, $249.00) is currently shipped via USPS with tracking number 9405511899223456789012."
+              }
+            ]
+          },
+          "intermediate_data": {
+            "tool_uses": [
+              {
+                "name": "lookup_ecommerce_order_by_id",
+                "args": {
+                  "order_id": "ORD-1002"
+                }
+              }
+            ],
+            "intermediate_responses": []
+          }
+        }
+      ],
+      "session_input": {
+        "app_name": "shopguard_ecommerce_support",
+        "user_id": "CUST-101",
+        "state": {}
+      }
+    },
+    {
+      "eval_id": "case_02_return_policy_semantic_search",
+      "conversation": [
+        {
+          "invocation_id": "inv-policy-damaged-window",
+          "user_content": {
+            "role": "user",
+            "parts": [
+              {
+                "text": "What is your return policy if an item arrives damaged, and does it apply to final sale items?"
+              }
+            ]
+          },
+          "final_response": {
+            "role": "model",
+            "parts": [
+              {
+                "text": "Under ShopGuard policy POL-DAMAGED-60D, items that arrive damaged, defective, or wrong qualify for a full refund or replacement up to 60 days after delivery with waived return shipping fees, even on final-sale items."
+              }
+            ]
+          },
+          "intermediate_data": {
+            "tool_uses": [
+              {
+                "name": "search_ecommerce_return_and_shipping_policies",
+                "args": {
+                  "query": "damaged item return policy final sale",
+                  "top_k": 3
+                }
+              }
+            ],
+            "intermediate_responses": []
+          }
+        }
+      ],
+      "session_input": {
+        "app_name": "shopguard_ecommerce_support",
+        "user_id": "CUST-101",
+        "state": {}
+      }
+    },
+    {
+      "eval_id": "case_03_unshipped_address_modification",
+      "conversation": [
+        {
+          "invocation_id": "inv-update-address-1003",
+          "user_content": {
+            "role": "user",
+            "parts": [
+              {
+                "text": "Please update the shipping destination on my unshipped monitor order ORD-1003 to Austin, TX 78701."
+              }
+            ]
+          },
+          "final_response": {
+            "role": "model",
+            "parts": [
+              {
+                "text": "I have updated the shipping destination for order ORD-1003 from Denver, CO 80202 to Austin, TX 78701 prior to warehouse dispatch."
+              }
+            ]
+          },
+          "intermediate_data": {
+            "tool_uses": [
+              {
+                "name": "lookup_ecommerce_order_by_id",
+                "args": {
+                  "order_id": "ORD-1003"
+                }
+              },
+              {
+                "name": "update_unshipped_order_shipping_address",
+                "args": {
+                  "order_id": "ORD-1003",
+                  "new_city_state_zip": "Austin, TX 78701"
+                }
+              }
+            ],
+            "intermediate_responses": []
+          }
+        }
+      ],
+      "session_input": {
+        "app_name": "shopguard_ecommerce_support",
+        "user_id": "CUST-102",
+        "state": {}
+      }
+    },
+    {
+      "eval_id": "case_04_low_value_eligible_refund_ord_1001",
+      "conversation": [
+        {
+          "invocation_id": "inv-refund-1001",
+          "user_content": {
+            "role": "user",
+            "parts": [
+              {
+                "text": "I changed my mind about the wireless headphones in order ORD-1001 delivered 10 days ago. Please refund it."
+              }
+            ]
+          },
+          "final_response": {
+            "role": "model",
+            "parts": [
+              {
+                "text": "Your $79.99 refund for order ORD-1001 has been processed under our 30-day return policy (POL-RETURN-30D) and will settle within 3 business days."
+              }
+            ]
+          },
+          "intermediate_data": {
+            "tool_uses": [
+              {
+                "name": "lookup_ecommerce_order_by_id",
+                "args": {
+                  "order_id": "ORD-1001"
+                }
+              },
+              {
+                "name": "evaluate_order_refund_eligibility",
+                "args": {
+                  "order_id": "ORD-1001",
+                  "reason_category": "changed_mind"
+                }
+              },
+              {
+                "name": "issue_verified_order_refund",
+                "args": {
+                  "order_id": "ORD-1001",
+                  "refund_amount_usd": 79.99,
+                  "reason": "Customer changed mind within 30-day return window"
+                }
+              }
+            ],
+            "intermediate_responses": []
+          }
+        }
+      ],
+      "session_input": {
+        "app_name": "shopguard_ecommerce_support",
+        "user_id": "CUST-101",
+        "state": {}
+      }
+    },
+    {
+      "eval_id": "case_05_expired_final_sale_escalation_ord_1005",
+      "conversation": [
+        {
+          "invocation_id": "inv-escalate-1005",
+          "user_content": {
+            "role": "user",
+            "parts": [
+              {
+                "text": "I want a refund on clearance sling bag order ORD-1005 because I changed my mind, or please escalate to a manager for store credit review."
+              }
+            ]
+          },
+          "final_response": {
+            "role": "model",
+            "parts": [
+              {
+                "text": "Order ORD-1005 was a final-sale clearance item delivered 70 days ago, so it is ineligible for an automated refund under POL-RETURN-30D. I have opened a Tier-2 escalation ticket for manual store-credit review."
+              }
+            ]
+          },
+          "intermediate_data": {
+            "tool_uses": [
+              {
+                "name": "lookup_ecommerce_order_by_id",
+                "args": {
+                  "order_id": "ORD-1005"
+                }
+              },
+              {
+                "name": "evaluate_order_refund_eligibility",
+                "args": {
+                  "order_id": "ORD-1005",
+                  "reason_category": "changed_mind"
+                }
+              },
+              {
+                "name": "create_priority_support_escalation_ticket",
+                "args": {
+                  "order_id": "ORD-1005",
+                  "customer_id": "CUST-101",
+                  "severity": "medium",
+                  "issue_summary": "Customer requested store-credit exception review on final-sale order ORD-1005 outside 30-day window."
+                }
+              }
+            ],
+            "intermediate_responses": []
+          }
+        }
+      ],
+      "session_input": {
+        "app_name": "shopguard_ecommerce_support",
+        "user_id": "CUST-101",
+        "state": {}
+      }
+    }
+  ]
+}

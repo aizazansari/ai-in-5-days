@@ -1,0 +1,47 @@
+{
+  "eval_set_id": "order_lookup_smoke_test",
+  "name": "Order Lookup Smoke Test",
+  "description": "Fast single-session ADK test file for CLI regression verification (`adk eval app eval/order_lookup_and_refund.test.json`).",
+  "eval_cases": [
+    {
+      "eval_id": "smoke_lookup_ord_1001",
+      "conversation": [
+        {
+          "invocation_id": "smoke-inv-001",
+          "user_content": {
+            "role": "user",
+            "parts": [
+              {
+                "text": "Check the delivery status of order ORD-1001."
+              }
+            ]
+          },
+          "final_response": {
+            "role": "model",
+            "parts": [
+              {
+                "text": "Order ORD-1001 (AeroPulse Wireless ANC Headphones, $79.99) was delivered on 2026-10-19 via UPS."
+              }
+            ]
+          },
+          "intermediate_data": {
+            "tool_uses": [
+              {
+                "name": "lookup_ecommerce_order_by_id",
+                "args": {
+                  "order_id": "ORD-1001"
+                }
+              }
+            ],
+            "intermediate_responses": []
+          }
+        }
+      ],
+      "session_input": {
+        "app_name": "shopguard_ecommerce_support",
+        "user_id": "CUST-101",
+        "state": {}
+      }
+    }
+  ]
+}
